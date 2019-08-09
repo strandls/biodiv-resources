@@ -23,10 +23,12 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Scopes;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.strandls.resource.controllers.ResourceControllerModule;
 import com.strandls.resource.dao.ResourceDaoModule;
 import com.strandls.resource.services.Impl.ResourceServicesModule;
+import com.strandls.user.controller.UserServiceApi;
 import com.sun.jersey.guice.JerseyServletModule;
 import com.sun.jersey.guice.spi.container.servlet.GuiceContainer;
 
@@ -66,6 +68,8 @@ public class ResourceServeletContextListener extends GuiceServletContextListener
 				bind(SessionFactory.class).toInstance(sessionFactory);
 
 				serve("/api/*").with(GuiceContainer.class,props);
+				
+				bind(UserServiceApi.class).in(Scopes.SINGLETON);
 			}
 		}, new ResourceControllerModule(), new ResourceServicesModule(), new ResourceDaoModule());
 

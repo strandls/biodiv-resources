@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response.Status;
 import com.google.inject.Inject;
 import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
-import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.services.ResourceServices;
 
 import io.swagger.annotations.Api;
@@ -55,22 +55,17 @@ public class ResourceController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find Media Reource by Observation ID", notes = "Returns Path of the Resources", response = Resource.class)
+	@ApiOperation(value = "Find Media Reource by Observation ID", notes = "Returns Path of the Resources", response = ObservationResourceUser.class)
 	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = Resource.class, responseContainer = "List"),
-			@ApiResponse(code = 404, message = "Resource not found", response = String.class),
+			@ApiResponse(code = 200, message = "Success", response = ObservationResourceUser.class, responseContainer = "List"),
 			@ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
 	public Response getImageResource(
 			@ApiParam(value = "ID Observation for Resource", required = true) @PathParam("observationId") String obvId) {
 		try {
 			Long id = Long.parseLong(obvId);
-			List<Resource> resource = service.getResouceURL(id);
-//			if (!resource.isEmpty())
-				return Response.status(Status.OK).entity(resource).build();
-//			else
-//				return Response.status(Status.NOT_FOUND).build();
-
+			List<ObservationResourceUser> resource = service.getResouceURL(id);
+			return Response.status(Status.OK).entity(resource).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
