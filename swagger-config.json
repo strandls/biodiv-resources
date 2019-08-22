@@ -1,0 +1,14 @@
+{
+  "modelPackage": "com.strandls.resource.pojo",
+  "apiPackage": "com.strandls.resource.controllers",
+  "invokerPackage": "com.strandls.resource",
+  "groupId": "com.strandls.biodiv",
+  "artifactId": "resource-client",
+  "artifactVersion": "1.0.0-SNAPSHOT",
+  "fullJavaUtil": true,
+  "dateLibrary": "java8",
+  "library": "jersey1",
+  "developerName": "Abhishek Kumar Rudra",
+  "developerEmail": "abhishek.rudra@strandls.com",
+  "java8": true
+}

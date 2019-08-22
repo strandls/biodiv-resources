@@ -25,8 +25,6 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import io.swagger.annotations.SwaggerDefinition;
-import io.swagger.annotations.Tag;
 
 /**
  * @author Abhishek Rudra
@@ -34,7 +32,6 @@ import io.swagger.annotations.Tag;
  */
 
 @Api("Resource Services")
-@SwaggerDefinition(tags = { @Tag(name = "V1 getpath", description = "Rest endpoint for Resource Service") })
 @Path(ApiConstants.V1 + ApiConstants.GETPATH)
 public class ResourceController {
 
