@@ -52,10 +52,8 @@ public class ResourceController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ApiOperation(value = "Find Media Reource by Observation ID", notes = "Returns Path of the Resources", response = ObservationResourceUser.class)
-	@ApiResponses(value = {
-			@ApiResponse(code = 200, message = "Success", response = ObservationResourceUser.class, responseContainer = "List"),
-			@ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
+	@ApiOperation(value = "Find Media Reource by Observation ID", notes = "Returns Path of the Resources", response = ObservationResourceUser.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
 	public Response getImageResource(
 			@ApiParam(value = "ID Observation for Resource", required = true) @PathParam("observationId") String obvId) {
@@ -74,8 +72,7 @@ public class ResourceController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ApiOperation(value = "Find Media Reource of License by ID", notes = "Returns Path of the license", response = License.class)
-	@ApiResponses(value = { @ApiResponse(code = 200, message = "Success", response = License.class),
-			@ApiResponse(code = 404, message = "License not found", response = String.class),
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "License not found", response = String.class),
 			@ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
 	public Response getLicenseResource(
