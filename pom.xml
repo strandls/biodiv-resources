@@ -25,9 +25,9 @@
 		<openapi-generator-cli.version>4.0.3</openapi-generator-cli.version>
 
 		<!-- Project property -->
-		<war-name>resources</war-name>
+		<war-name>resources-api</war-name>
 		<srcDir>src/main/webapp</srcDir>
-		<base-path>/resources/api</base-path>
+		<base-path>/resources-api/api</base-path>
 		<location>com.strandls.resource</location>
 	</properties>
 
