@@ -11,8 +11,10 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.strandls.resource.dao.LicenseDao;
+import com.strandls.resource.dao.ObservationResourceDao;
 import com.strandls.resource.dao.ResourceDao;
 import com.strandls.resource.pojo.License;
+import com.strandls.resource.pojo.ObservationResource;
 import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.services.ResourceServices;
@@ -27,28 +29,31 @@ import com.strandls.user.pojo.User;
 public class ResourceServicesImpl implements ResourceServices {
 
 	private static final Logger logger = LoggerFactory.getLogger(ResourceServicesImpl.class);
-	
+
 	@Inject
 	private ResourceDao resourceDao;
-	
+
 	@Inject
 	private LicenseDao licenseDao;
-	
+
 	@Inject
 	private UserServiceApi userService;
+
+	@Inject
+	private ObservationResourceDao observationResourceDao;
 
 	@Override
 	public List<ObservationResourceUser> getResouceURL(Long obvId) {
 		List<ObservationResourceUser> observationResourceUsers = new ArrayList<ObservationResourceUser>();
 		List<Resource> resource = resourceDao.findByObservationId(obvId);
-		for(Resource r: resource) {
+		for (Resource r : resource) {
 			try {
-				User u= userService.getUser(r.getUploaderId().toString());
-				observationResourceUsers.add(new ObservationResourceUser(r,u));
+				User u = userService.getUser(r.getUploaderId().toString());
+				observationResourceUsers.add(new ObservationResourceUser(r, u));
 			} catch (ApiException e) {
 				logger.error(e.getMessage());
 			}
-			
+
 		}
 		return observationResourceUsers;
 	}
@@ -57,6 +62,29 @@ public class ResourceServicesImpl implements ResourceServices {
 	public License getLicenseResouce(Long licenseId) {
 		License license = licenseDao.findById(licenseId);
 		return license;
+	}
+
+	@Override
+	public List<String> createResource(String objectType, Long objectId, List<Resource> resources) {
+		List<String> failedResources = new ArrayList<String>();
+		for (Resource resource : resources) {
+			Resource result = resourceDao.save(resource);
+			if (result != null) {
+				logger.debug("Resource Created with ID :" + result.getId());
+
+				if (objectType.equalsIgnoreCase("observation")) {
+					ObservationResource entity = new ObservationResource(objectId, result.getId());
+					ObservationResource mappingResult = observationResourceDao.save(entity);
+					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
+							+ mappingResult.getResourceId());
+				}
+			} else {
+				failedResources.add(resource.getFileName());
+			}
+
+		}
+		return failedResources;
+
 	}
 
 }

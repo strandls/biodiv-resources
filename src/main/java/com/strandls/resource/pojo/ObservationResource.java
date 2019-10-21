@@ -8,6 +8,7 @@ import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,6 +21,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Entity
 @Table(name = "observation_resource")
 @JsonIgnoreProperties(ignoreUnknown = true)
+@IdClass(CompositeKeyObservationResource.class)
 public class ObservationResource implements Serializable {
 
 	/**
@@ -29,6 +31,16 @@ public class ObservationResource implements Serializable {
 
 	private Long observationId;
 	private Long resourceId;
+
+	/**
+	 * @param observationId
+	 * @param resourceId
+	 */
+	public ObservationResource(Long observationId, Long resourceId) {
+		super();
+		this.observationId = observationId;
+		this.resourceId = resourceId;
+	}
 
 	@Id
 	@Column(name = "observation_id")

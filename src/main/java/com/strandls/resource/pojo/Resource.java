@@ -4,6 +4,7 @@
 package com.strandls.resource.pojo;
 
 import java.io.Serializable;
+import java.sql.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,12 +32,14 @@ public class Resource implements Serializable {
 	private static final long serialVersionUID = -4877757562860141754L;
 
 	private Long id;
+	private Long version;
 	private String description;
 	private String fileName;
 	private String mimeType;
 	private String type;
 	private String url;
 	private Integer rating;
+	private Date uploadTime;
 	private Long uploaderId;
 	private String context;
 	private Long languageId;
@@ -54,6 +57,15 @@ public class Resource implements Serializable {
 
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	@Column(name = "version")
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 
 	@Column(name = "file_name")
@@ -90,6 +102,15 @@ public class Resource implements Serializable {
 
 	public void setLicenseId(Long licenseId) {
 		this.licenseId = licenseId;
+	}
+
+	@Column(name = "upload_time")
+	public Date getUploadTime() {
+		return uploadTime;
+	}
+
+	public void setUploadTime(Date uploadTime) {
+		this.uploadTime = uploadTime;
 	}
 
 	@Column(name = "uploader_id")

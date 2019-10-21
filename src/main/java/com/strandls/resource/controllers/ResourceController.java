@@ -7,6 +7,7 @@ import java.util.List;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -18,6 +19,7 @@ import com.google.inject.Inject;
 import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResourceUser;
+import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.services.ResourceServices;
 
 import io.swagger.annotations.Api;
@@ -32,7 +34,7 @@ import io.swagger.annotations.ApiResponses;
  */
 
 @Api("Resource Services")
-@Path(ApiConstants.V1 + ApiConstants.GETPATH)
+@Path(ApiConstants.V1 + ApiConstants.RESOURCE)
 public class ResourceController {
 
 	@Inject
@@ -48,7 +50,7 @@ public class ResourceController {
 	}
 
 	@GET
-	@Path(ApiConstants.RESOURCE + "/{observationId}")
+	@Path(ApiConstants.GETPATH + "/{observationId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
@@ -63,6 +65,24 @@ public class ResourceController {
 			return Response.status(Status.OK).entity(resource).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.CREATE + "/{objectType}/{objectId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	public Response createResource(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
+			@ApiParam List<Resource> resources) {
+		try {
+			Long id = Long.parseLong(objectId);
+			List<String> result = service.createResource(objectType, id, resources);
+			if (result.isEmpty())
+				return Response.status(Status.CREATED).entity(null).build();
+			return Response.status(206).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
 
@@ -90,4 +110,5 @@ public class ResourceController {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
+
 }
