@@ -73,8 +73,11 @@ public class ResourceController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 
+	@ApiOperation(value = "Create Resources against a objectId", notes = "Returns list of uncreated resources", response = ObservationResourceUser.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
+
 	public Response createResource(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
-			@ApiParam List<Resource> resources) {
+			@ApiParam(name = "resources") List<Resource> resources) {
 		try {
 			Long id = Long.parseLong(objectId);
 			List<String> result = service.createResource(objectType, id, resources);
