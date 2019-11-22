@@ -48,7 +48,7 @@ public class ResourceServicesImpl implements ResourceServices {
 		List<Resource> resource = resourceDao.findByObservationId(obvId);
 		for (Resource r : resource) {
 			try {
-				User u = userService.getUser(r.getUploaderId().toString());
+				User u = userService.getUser();
 				observationResourceUsers.add(new ObservationResourceUser(r, u));
 			} catch (ApiException e) {
 				logger.error(e.getMessage());

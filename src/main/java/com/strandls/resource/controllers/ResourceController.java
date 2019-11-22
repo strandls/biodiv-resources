@@ -5,17 +5,20 @@ package com.strandls.resource.controllers;
 
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
 import com.google.inject.Inject;
+import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResourceUser;
@@ -54,10 +57,11 @@ public class ResourceController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
+	@ValidateUser
 	@ApiOperation(value = "Find Media Reource by Observation ID", notes = "Returns Path of the Resources", response = ObservationResourceUser.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
-	public Response getImageResource(
+	public Response getImageResource(@Context HttpServletRequest request,
 			@ApiParam(value = "ID Observation for Resource", required = true) @PathParam("observationId") String obvId) {
 		try {
 			Long id = Long.parseLong(obvId);
@@ -73,11 +77,12 @@ public class ResourceController {
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 
+	@ValidateUser
 	@ApiOperation(value = "Create Resources against a objectId", notes = "Returns list of uncreated resources", response = ObservationResourceUser.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
-	public Response createResource(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
-			@ApiParam(name = "resources") List<Resource> resources) {
+	public Response createResource(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
+			@PathParam("objectId") String objectId, @ApiParam(name = "resources") List<Resource> resources) {
 		try {
 			Long id = Long.parseLong(objectId);
 			List<String> result = service.createResource(objectType, id, resources);
