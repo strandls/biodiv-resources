@@ -57,11 +57,10 @@ public class ResourceController {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
-	@ValidateUser
 	@ApiOperation(value = "Find Media Reource by Observation ID", notes = "Returns Path of the Resources", response = ObservationResourceUser.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
-	public Response getImageResource(@Context HttpServletRequest request,
+	public Response getImageResource(
 			@ApiParam(value = "ID Observation for Resource", required = true) @PathParam("observationId") String obvId) {
 		try {
 			Long id = Long.parseLong(obvId);
