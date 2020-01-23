@@ -20,4 +20,6 @@ public interface ResourceServices {
 	public License getLicenseResouce(Long licenseId);
 
 	public List<String> createResource(String objectType, Long objectId, List<Resource> resources);
+
+	public List<Resource> updateResource(String objectType, Long objectId, List<Resource> newResources);
 }

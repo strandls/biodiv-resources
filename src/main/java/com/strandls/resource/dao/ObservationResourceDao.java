@@ -5,6 +5,7 @@ package com.strandls.resource.dao;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +41,25 @@ public class ObservationResourceDao extends AbstractDAO<ObservationResource, Lon
 			session.close();
 		}
 		return entity;
+	}
+
+	@SuppressWarnings("unchecked")
+	public ObservationResource findByPair(Long observationId, Long resourceId) {
+		Session session = sessionFactory.openSession();
+		String qry = "from ObservationResource where observationId = :observationId and resourceId = :resourceId";
+		ObservationResource result = null;
+		try {
+			Query<ObservationResource> query = session.createQuery(qry);
+			query.setParameter("observationId", observationId);
+			query.setParameter("resourceId", resourceId);
+			result = query.getSingleResult();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return result;
 	}
 
 }

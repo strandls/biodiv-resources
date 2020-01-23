@@ -87,4 +87,49 @@ public class ResourceServicesImpl implements ResourceServices {
 
 	}
 
+	@Override
+	public List<Resource> updateResource(String objectType, Long objectId, List<Resource> newResources) {
+
+		List<Resource> newResourceList = new ArrayList<Resource>();
+		int flag = 0;
+		List<Resource> oldResourcesList = resourceDao.findByObservationId(objectId);
+		for (Resource resource : newResources) {
+			flag = 0;
+			for (Resource oldResource : oldResourcesList) {
+				if (oldResource.getFileName().equals(resource.getFileName())) {
+					flag = 1;
+					newResourceList.add(oldResource);
+					break;
+				}
+			}
+			if (flag == 0) {
+				resource = resourceDao.save(resource);
+				newResourceList.add(resource);
+
+				if (objectType.equalsIgnoreCase("observation")) {
+					ObservationResource entity = new ObservationResource(objectId, resource.getId());
+					ObservationResource mappingResult = observationResourceDao.save(entity);
+					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
+							+ mappingResult.getResourceId());
+				}
+			}
+		}
+		for (Resource oldResource : oldResourcesList) {
+			flag = 0;
+			for (Resource resource : newResources) {
+				if (oldResource.getFileName().equals(resource.getFileName())) {
+					flag = 1;
+				}
+			}
+			if (flag == 0) {
+				ObservationResource observationResource = observationResourceDao.findByPair(objectId,
+						oldResource.getId());
+				observationResourceDao.delete(observationResource);
+				resourceDao.delete(oldResource);
+			}
+		}
+
+		return newResourceList;
+	}
+
 }

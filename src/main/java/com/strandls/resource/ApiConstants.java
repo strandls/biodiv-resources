@@ -17,6 +17,7 @@ public class ApiConstants {
 	public static final String GETPATH = "/getpath";
 	public static final String RESOURCE = "/resource";
 	public static final String CREATE = "/create";
+	public static final String UPDATE = "/update";
 	public static final String LICENSE = "/lisence";
 
 }
