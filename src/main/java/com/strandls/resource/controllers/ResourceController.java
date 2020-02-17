@@ -78,14 +78,14 @@ public class ResourceController {
 	@Produces(MediaType.APPLICATION_JSON)
 
 	@ValidateUser
-	@ApiOperation(value = "Create Resources against a objectId", notes = "Returns list of uncreated resources", response = ObservationResourceUser.class, responseContainer = "List")
+	@ApiOperation(value = "Create Resources against a objectId", notes = "Returns list of uncreated resources", response = Resource.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "Invalid ID", response = String.class) })
 
 	public Response createResource(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
 			@PathParam("objectId") String objectId, @ApiParam(name = "resources") List<Resource> resources) {
 		try {
 			Long id = Long.parseLong(objectId);
-			List<String> result = service.createResource(objectType, id, resources);
+			List<Resource> result = service.createResource(objectType, id, resources);
 			if (result.isEmpty())
 				return Response.status(Status.CREATED).entity(null).build();
 			return Response.status(206).entity(result).build();

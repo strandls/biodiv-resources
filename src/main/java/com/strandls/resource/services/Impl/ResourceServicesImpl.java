@@ -65,8 +65,7 @@ public class ResourceServicesImpl implements ResourceServices {
 	}
 
 	@Override
-	public List<String> createResource(String objectType, Long objectId, List<Resource> resources) {
-		List<String> failedResources = new ArrayList<String>();
+	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources) {
 		for (Resource resource : resources) {
 			Resource result = resourceDao.save(resource);
 			if (result != null) {
@@ -78,12 +77,11 @@ public class ResourceServicesImpl implements ResourceServices {
 					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
 							+ mappingResult.getResourceId());
 				}
-			} else {
-				failedResources.add(resource.getFileName());
 			}
 
 		}
-		return failedResources;
+		resources = resourceDao.findByObservationId(objectId);
+		return resources;
 
 	}
 
@@ -98,7 +96,8 @@ public class ResourceServicesImpl implements ResourceServices {
 			for (Resource oldResource : oldResourcesList) {
 				if (oldResource.getFileName().equals(resource.getFileName())) {
 					flag = 1;
-					newResourceList.add(oldResource);
+					resource.setId(oldResource.getId());
+					resourceDao.update(resource);
 					break;
 				}
 			}
@@ -125,7 +124,6 @@ public class ResourceServicesImpl implements ResourceServices {
 				ObservationResource observationResource = observationResourceDao.findByPair(objectId,
 						oldResource.getId());
 				observationResourceDao.delete(observationResource);
-				resourceDao.delete(oldResource);
 			}
 		}
 

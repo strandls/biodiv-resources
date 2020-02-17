@@ -49,7 +49,7 @@ public class ResourceDao extends AbstractDAO<Resource, Long> {
 	public List<Resource> findByObservationId(Long obvId) {
 
 		String qry = "from Resource R where R.id in(" + "select resourceId from ObservationResource obv "
-				+ "where obv.observationId = :obvId)";
+				+ "where obv.observationId = :obvId) order by rating DESC";
 
 		Session session = sessionFactory.openSession();
 		Query<Resource> query = session.createQuery(qry);
