@@ -88,7 +88,7 @@ public class ResourceServicesImpl implements ResourceServices {
 	@Override
 	public List<Resource> updateResource(String objectType, Long objectId, List<Resource> newResources) {
 
-		List<Resource> newResourceList = new ArrayList<Resource>();
+		List<Resource> resourceList = new ArrayList<Resource>();
 		int flag = 0;
 		List<Resource> oldResourcesList = resourceDao.findByObservationId(objectId);
 		for (Resource resource : newResources) {
@@ -103,7 +103,6 @@ public class ResourceServicesImpl implements ResourceServices {
 			}
 			if (flag == 0) {
 				resource = resourceDao.save(resource);
-				newResourceList.add(resource);
 
 				if (objectType.equalsIgnoreCase("observation")) {
 					ObservationResource entity = new ObservationResource(objectId, resource.getId());
@@ -127,7 +126,8 @@ public class ResourceServicesImpl implements ResourceServices {
 			}
 		}
 
-		return newResourceList;
+		resourceList = resourceDao.findByObservationId(objectId);
+		return resourceList;
 	}
 
 }
