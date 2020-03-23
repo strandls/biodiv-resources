@@ -33,6 +33,13 @@ public class ObservationResource implements Serializable {
 	private Long resourceId;
 
 	/**
+	 * 
+	 */
+	public ObservationResource() {
+		super();
+	}
+
+	/**
 	 * @param observationId
 	 * @param resourceId
 	 */

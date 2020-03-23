@@ -65,8 +65,7 @@ public class ResourceServicesImpl implements ResourceServices {
 	}
 
 	@Override
-	public List<String> createResource(String objectType, Long objectId, List<Resource> resources) {
-		List<String> failedResources = new ArrayList<String>();
+	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources) {
 		for (Resource resource : resources) {
 			Resource result = resourceDao.save(resource);
 			if (result != null) {
@@ -78,13 +77,57 @@ public class ResourceServicesImpl implements ResourceServices {
 					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
 							+ mappingResult.getResourceId());
 				}
-			} else {
-				failedResources.add(resource.getFileName());
 			}
 
 		}
-		return failedResources;
+		resources = resourceDao.findByObservationId(objectId);
+		return resources;
 
+	}
+
+	@Override
+	public List<Resource> updateResource(String objectType, Long objectId, List<Resource> newResources) {
+
+		List<Resource> resourceList = new ArrayList<Resource>();
+		int flag = 0;
+		List<Resource> oldResourcesList = resourceDao.findByObservationId(objectId);
+		for (Resource resource : newResources) {
+			flag = 0;
+			for (Resource oldResource : oldResourcesList) {
+				if (oldResource.getFileName().equals(resource.getFileName())) {
+					flag = 1;
+					resource.setId(oldResource.getId());
+					resourceDao.update(resource);
+					break;
+				}
+			}
+			if (flag == 0) {
+				resource = resourceDao.save(resource);
+
+				if (objectType.equalsIgnoreCase("observation")) {
+					ObservationResource entity = new ObservationResource(objectId, resource.getId());
+					ObservationResource mappingResult = observationResourceDao.save(entity);
+					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
+							+ mappingResult.getResourceId());
+				}
+			}
+		}
+		for (Resource oldResource : oldResourcesList) {
+			flag = 0;
+			for (Resource resource : newResources) {
+				if (oldResource.getFileName().equals(resource.getFileName())) {
+					flag = 1;
+				}
+			}
+			if (flag == 0) {
+				ObservationResource observationResource = observationResourceDao.findByPair(objectId,
+						oldResource.getId());
+				observationResourceDao.delete(observationResource);
+			}
+		}
+
+		resourceList = resourceDao.findByObservationId(objectId);
+		return resourceList;
 	}
 
 }
