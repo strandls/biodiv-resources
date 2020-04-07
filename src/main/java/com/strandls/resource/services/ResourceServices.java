@@ -22,4 +22,6 @@ public interface ResourceServices {
 	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources);
 
 	public List<Resource> updateResource(String objectType, Long objectId, List<Resource> newResources);
+	
+	public List<Resource> updateResourceRating(String objectType, Long objectId,Long resourceId,Integer rating);
 }

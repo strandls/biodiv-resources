@@ -13,6 +13,7 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -112,6 +113,31 @@ public class ResourceController {
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
+	}
+
+	@PUT
+	@Path(ApiConstants.UPDATE + ApiConstants.RATING + "/{objectType}/{objectId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+
+	@ApiOperation(value = "update the rating of the resource", notes = "Returns all the resource", response = Resource.class, responseContainer = "List")
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "unable to update the rating", response = String.class) })
+
+	public Response updateRating(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
+			@QueryParam("rating") String rating, @QueryParam("resourceId") String resourceId) {
+		try {
+			Long objId = Long.parseLong(objectId);
+			Integer resourceRating = Integer.parseInt(rating);
+			Long id = Long.parseLong(resourceId);
+			List<Resource> result = service.updateResourceRating(objectType, objId, id, resourceRating);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+
 	}
 
 	@GET

@@ -130,4 +130,13 @@ public class ResourceServicesImpl implements ResourceServices {
 		return resourceList;
 	}
 
+	@Override
+	public List<Resource> updateResourceRating(String objectType, Long objectId, Long resourceId, Integer rating) {
+		Resource resource = resourceDao.findById(resourceId);
+		resource.setRating(rating);
+		resourceDao.update(resource);
+		List<Resource> resourceList = resourceDao.findByObservationId(objectId);
+		return resourceList;
+	}
+
 }
