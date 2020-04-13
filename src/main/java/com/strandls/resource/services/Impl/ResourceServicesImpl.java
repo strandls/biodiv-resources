@@ -17,6 +17,7 @@ import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResource;
 import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
@@ -131,9 +132,9 @@ public class ResourceServicesImpl implements ResourceServices {
 	}
 
 	@Override
-	public List<Resource> updateResourceRating(String objectType, Long objectId, Long resourceId, Integer rating) {
-		Resource resource = resourceDao.findById(resourceId);
-		resource.setRating(rating);
+	public List<Resource> updateResourceRating(String objectType, Long objectId, ResourceRating resourceRating) {
+		Resource resource = resourceDao.findById(resourceRating.getResourceId());
+		resource.setRating(resourceRating.getRating());
 		resourceDao.update(resource);
 		List<Resource> resourceList = resourceDao.findByObservationId(objectId);
 		return resourceList;

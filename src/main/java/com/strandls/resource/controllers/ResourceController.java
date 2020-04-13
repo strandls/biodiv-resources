@@ -13,7 +13,6 @@ import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -25,6 +24,7 @@ import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.services.ResourceServices;
 
 import io.swagger.annotations.Api;
@@ -127,12 +127,10 @@ public class ResourceController {
 			@ApiResponse(code = 400, message = "unable to update the rating", response = String.class) })
 
 	public Response updateRating(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
-			@QueryParam("rating") String rating, @QueryParam("resourceId") String resourceId) {
+			@ApiParam(name = "resourceRating") ResourceRating resourceRating) {
 		try {
 			Long objId = Long.parseLong(objectId);
-			Integer resourceRating = Integer.parseInt(rating);
-			Long id = Long.parseLong(resourceId);
-			List<Resource> result = service.updateResourceRating(objectType, objId, id, resourceRating);
+			List<Resource> result = service.updateResourceRating(objectType, objId, resourceRating);
 			return Response.status(Status.OK).entity(result).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
