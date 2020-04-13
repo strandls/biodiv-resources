@@ -126,8 +126,8 @@ public class ResourceController {
 	@ApiResponses(value = {
 			@ApiResponse(code = 400, message = "unable to update the rating", response = String.class) })
 
-	public Response updateRating(@PathParam("objectType") String objectType, @PathParam("objectId") String objectId,
-			@ApiParam(name = "resourceRating") ResourceRating resourceRating) {
+	public Response updateRating(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
+			@PathParam("objectId") String objectId, @ApiParam(name = "resourceRating") ResourceRating resourceRating) {
 		try {
 			Long objId = Long.parseLong(objectId);
 			List<Resource> result = service.updateResourceRating(objectType, objId, resourceRating);
