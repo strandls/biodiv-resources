@@ -24,6 +24,7 @@ import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.services.ResourceServices;
 
 import io.swagger.annotations.Api;
@@ -112,6 +113,29 @@ public class ResourceController {
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
+	}
+
+	@PUT
+	@Path(ApiConstants.UPDATE + ApiConstants.RATING + "/{objectType}/{objectId}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+
+	@ApiOperation(value = "update the rating of the resource", notes = "Returns all the resource", response = Resource.class, responseContainer = "List")
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "unable to update the rating", response = String.class) })
+
+	public Response updateRating(@Context HttpServletRequest request, @PathParam("objectType") String objectType,
+			@PathParam("objectId") String objectId, @ApiParam(name = "resourceRating") ResourceRating resourceRating) {
+		try {
+			Long objId = Long.parseLong(objectId);
+			List<Resource> result = service.updateResourceRating(objectType, objId, resourceRating);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+
 	}
 
 	@GET
