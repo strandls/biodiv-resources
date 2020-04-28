@@ -68,10 +68,9 @@ public class ResourceServeletContextListener extends GuiceServletContextListener
 
 				bind(SessionFactory.class).toInstance(sessionFactory);
 
+				bind(UserServiceApi.class).in(Scopes.SINGLETON);
 				serve("/api/*").with(GuiceContainer.class, props);
 
-				bind(UserServiceApi.class).in(Scopes.SINGLETON);
-				filter("/*").through(SwaggerFilter.class);
 			}
 		}, new ResourceControllerModule(), new FilterModule(), new ResourceServicesModule(), new ResourceDaoModule());
 
