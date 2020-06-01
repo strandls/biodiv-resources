@@ -27,7 +27,6 @@ import com.google.inject.Injector;
 import com.google.inject.Scopes;
 import com.google.inject.servlet.GuiceServletContextListener;
 import com.google.inject.servlet.ServletModule;
-import com.strandls.authentication_utility.filter.FilterModule;
 import com.strandls.resource.controllers.ResourceControllerModule;
 import com.strandls.resource.dao.ResourceDaoModule;
 import com.strandls.resource.services.Impl.ResourceServicesModule;
@@ -74,7 +73,7 @@ public class ResourceServeletContextListener extends GuiceServletContextListener
 				serve("/api/*").with(ServletContainer.class, props);
 
 			}
-		}, new ResourceControllerModule(), new FilterModule(), new ResourceServicesModule(), new ResourceDaoModule());
+		}, new ResourceControllerModule(), new ResourceServicesModule(), new ResourceDaoModule());
 
 		return injector;
 
