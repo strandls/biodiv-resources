@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.strandls.resources</groupId>
 	<artifactId>resources-api</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<packaging>war</packaging>
 	<name>biodiv-resources-api</name>
 	<url>https://github.com/strandls/biodiv-resources</url>
@@ -182,13 +182,13 @@
 		<dependency>
 			<groupId>com.strandls.biodiv</groupId>
 			<artifactId>user-client</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.0</version>
 		</dependency>
 		
 		<dependency>
 		    <groupId>com.strandls.biodiv</groupId>
 		    <artifactId>authentication-utility</artifactId>
-		    <version>1.0.0-SNAPSHOT</version>
+		    <version>1.0.0</version>
 		</dependency>
 		
 
