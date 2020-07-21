@@ -14,11 +14,14 @@ import javax.inject.Inject;
 import com.strandls.resource.dao.LicenseDao;
 import com.strandls.resource.dao.ObservationResourceDao;
 import com.strandls.resource.dao.ResourceDao;
+import com.strandls.resource.dao.UFileDao;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResource;
 import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.pojo.ResourceRating;
+import com.strandls.resource.pojo.UFile;
+import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
@@ -37,6 +40,9 @@ public class ResourceServicesImpl implements ResourceServices {
 
 	@Inject
 	private LicenseDao licenseDao;
+
+	@Inject
+	private UFileDao uFileDao;
 
 	@Inject
 	private UserServiceApi userService;
@@ -139,6 +145,21 @@ public class ResourceServicesImpl implements ResourceServices {
 		resourceDao.update(resource);
 		List<Resource> resourceList = resourceDao.findByObservationId(objectId);
 		return resourceList;
+	}
+
+	@Override
+	public UFile uFileFindById(Long id) {
+		UFile result = uFileDao.findById(id);
+		return result;
+	}
+
+	@Override
+	public UFile createUFile(UFileCreateData ufileCreateData) {
+		UFile ufile = new UFile(null, 0L, null, ufileCreateData.getMimeType(), ufileCreateData.getPath(),
+				ufileCreateData.getSize(), (ufileCreateData.getWeight() > 0) ? ufileCreateData.getWeight() : 0);
+
+		ufile = uFileDao.save(ufile);
+		return ufile;
 	}
 
 }
