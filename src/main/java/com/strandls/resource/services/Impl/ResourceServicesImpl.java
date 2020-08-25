@@ -74,22 +74,28 @@ public class ResourceServicesImpl implements ResourceServices {
 
 	@Override
 	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources) {
-		for (Resource resource : resources) {
-			Resource result = resourceDao.save(resource);
-			if (result != null) {
-				logger.debug("Resource Created with ID :" + result.getId());
+		try {
+			for (Resource resource : resources) {
+				Resource result = resourceDao.save(resource);
+				if (result != null) {
+					logger.debug("Resource Created with ID :" + result.getId());
 
-				if (objectType.equalsIgnoreCase("observation")) {
-					ObservationResource entity = new ObservationResource(objectId, result.getId());
-					ObservationResource mappingResult = observationResourceDao.save(entity);
-					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
-							+ mappingResult.getResourceId());
+					if (objectType.equalsIgnoreCase("observation")) {
+						ObservationResource entity = new ObservationResource(objectId, result.getId());
+						ObservationResource mappingResult = observationResourceDao.save(entity);
+						logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId()
+								+ " and " + mappingResult.getResourceId());
+					}
 				}
-			}
 
+			}
+			resources = resourceDao.findByObservationId(objectId);
+			return resources;
+
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-		resources = resourceDao.findByObservationId(objectId);
-		return resources;
+		return null;
 
 	}
 
