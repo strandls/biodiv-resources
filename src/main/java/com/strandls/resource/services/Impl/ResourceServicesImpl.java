@@ -65,6 +65,11 @@ public class ResourceServicesImpl implements ResourceServices {
 		License license = licenseDao.findById(licenseId);
 		return license;
 	}
+	
+	@Override
+	public List<License> getAllLicenses() {
+		return licenseDao.findAll();
+	}
 
 	@Override
 	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources) {

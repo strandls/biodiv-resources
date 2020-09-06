@@ -19,6 +19,8 @@ public interface ResourceServices {
 	public List<ObservationResourceUser> getResouceURL(Long obvId);
 
 	public License getLicenseResouce(Long licenseId);
+	
+	public List<License> getAllLicenses();
 
 	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources);
 
