@@ -164,6 +164,23 @@ public class ResourceController {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
+	
+	@GET
+	@Path(ApiConstants.LICENSE + "/{licenseId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "Find all Licenses", notes = "Returns Path of the licenses", response = License.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 404, message = "License not found", response = String.class) })
+
+	public Response getAllLicenses(
+			@ApiParam(value = "ID for License Resource", required = true) @PathParam("licenseId") String licenseId) {
+		try {
+			return Response.status(Status.OK).entity(service.getAllLicenses()).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
 
 	@GET
 	@Path(ApiConstants.UFILE + "/{id}")
