@@ -166,7 +166,7 @@ public class ResourceController {
 	}
 	
 	@GET
-	@Path(ApiConstants.LICENSE + "/{licenseId}")
+	@Path(ApiConstants.LICENSE)
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 
