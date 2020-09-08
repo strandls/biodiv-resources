@@ -173,8 +173,7 @@ public class ResourceController {
 	@ApiOperation(value = "Find all Licenses", notes = "Returns Path of the licenses", response = License.class, responseContainer = "List")
 	@ApiResponses(value = { @ApiResponse(code = 404, message = "License not found", response = String.class) })
 
-	public Response getAllLicenses(
-			@ApiParam(value = "ID for License Resource", required = true) @PathParam("licenseId") String licenseId) {
+	public Response getAllLicenses() {
 		try {
 			return Response.status(Status.OK).entity(service.getAllLicenses()).build();
 		} catch (Exception e) {
