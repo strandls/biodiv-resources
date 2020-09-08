@@ -93,6 +93,7 @@ public class ResourceController {
 				return Response.status(Status.CREATED).entity(null).build();
 			return Response.status(206).entity(result).build();
 		} catch (Exception e) {
+			e.printStackTrace();
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
