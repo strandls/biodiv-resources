@@ -3,13 +3,16 @@
  */
 package com.strandls.resource.dao;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.inject.Inject;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 
 import com.strandls.resource.pojo.ObservationResource;
 import com.strandls.resource.util.AbstractDAO;
@@ -54,6 +57,29 @@ public class ObservationResourceDao extends AbstractDAO<ObservationResource, Lon
 			query.setParameter("observationId", observationId);
 			query.setParameter("resourceId", resourceId);
 			result = query.getSingleResult();
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+		return result;
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Long> findByObservationId(Long observationId) {
+		Session session = sessionFactory.openSession();
+		String qry = "from  ObservationResource where observationId = :observationId";
+		List<ObservationResource> observationResourceList = null;
+		List<Long> result = new ArrayList<Long>();
+		try {
+			Query<ObservationResource> query = session.createQuery(qry);
+			query.setParameter("observationId", observationId);
+			observationResourceList = query.getResultList();
+			if (observationResourceList != null && !observationResourceList.isEmpty()) {
+				for (ObservationResource observationResource : observationResourceList)
+					result.add(observationResource.getResourceId());
+			}
 
 		} catch (Exception e) {
 			logger.error(e.getMessage());
