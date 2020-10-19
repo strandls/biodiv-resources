@@ -5,6 +5,7 @@ package com.strandls.resource.controllers;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -18,13 +19,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import javax.inject.Inject;
-
 import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
-import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.services.ResourceServices;
 
@@ -69,7 +68,7 @@ public class ResourceController {
 		try {
 
 			Long objId = Long.parseLong(objectId);
-			List<ResourceData> resource = service.getResouceURL(id);
+			List<ResourceData> resource = service.getResouceURL(objectType, objId);
 			return Response.status(Status.OK).entity(resource).build();
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
