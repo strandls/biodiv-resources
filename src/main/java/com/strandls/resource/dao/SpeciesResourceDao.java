@@ -6,13 +6,14 @@ package com.strandls.resource.dao;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.Inject;
 import com.strandls.resource.pojo.SpeciesResource;
 import com.strandls.resource.util.AbstractDAO;
 
