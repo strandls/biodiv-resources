@@ -47,17 +47,24 @@ public class ResourceDao extends AbstractDAO<Resource, Long> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Resource> findByObservationId(Long obvId) {
+	public List<Resource> findByObjectTypeObjectId(String objectType, List<Long> objectIds) {
 
-		String qry = "from Resource R where R.id in(" + "select resourceId from ObservationResource obv "
-				+ "where obv.observationId = :obvId) order by rating DESC";
-
+		String qry = "from Resource R where R.context = :objectType and R.id in(:objectIds) order by rating DESC";
+		List<Resource> result = null;
 		Session session = sessionFactory.openSession();
-		Query<Resource> query = session.createQuery(qry);
-		query.setParameter("obvId", obvId);
+		try {
+			Query<Resource> query = session.createQuery(qry);
+			query.setParameter("objectType", objectType);
+			query.setParameter("objectIds", objectIds);
 
-		List<Resource> list = query.getResultList();
-		return list;
+			result = query.getResultList();
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		} finally {
+			session.close();
+		}
+
+		return result;
 	}
 
 }

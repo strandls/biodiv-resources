@@ -6,20 +6,22 @@ package com.strandls.resource.services.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 
 import com.strandls.resource.dao.LicenseDao;
 import com.strandls.resource.dao.ObservationResourceDao;
 import com.strandls.resource.dao.ResourceDao;
+import com.strandls.resource.dao.SpeciesResourceDao;
 import com.strandls.resource.dao.UFileDao;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResource;
-import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.ResourceRating;
+import com.strandls.resource.pojo.SpeciesResource;
 import com.strandls.resource.pojo.UFile;
 import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
@@ -50,14 +52,24 @@ public class ResourceServicesImpl implements ResourceServices {
 	@Inject
 	private ObservationResourceDao observationResourceDao;
 
+	@Inject
+	private SpeciesResourceDao speciesResourceDao;
+
 	@Override
-	public List<ObservationResourceUser> getResouceURL(Long obvId) {
-		List<ObservationResourceUser> observationResourceUsers = new ArrayList<ObservationResourceUser>();
-		List<Resource> resource = resourceDao.findByObservationId(obvId);
+	public List<ResourceData> getResouceURL(String objectType, Long objectId) {
+		List<ResourceData> observationResourceUsers = new ArrayList<ResourceData>();
+		List<Long> resourceIds = null;
+		if (objectType.equalsIgnoreCase("observation"))
+			resourceIds = observationResourceDao.findByObservationId(objectId);
+		else if (objectType.equalsIgnoreCase("species"))
+			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+		if (resourceIds != null && !resourceIds.isEmpty())
+			return null;
+		List<Resource> resource = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
 		for (Resource r : resource) {
 			try {
 				User u = userService.getUser(r.getUploaderId().toString());
-				observationResourceUsers.add(new ObservationResourceUser(r, u));
+				observationResourceUsers.add(new ResourceData(r, u));
 			} catch (ApiException e) {
 				logger.error(e.getMessage());
 			}
@@ -71,7 +83,7 @@ public class ResourceServicesImpl implements ResourceServices {
 		License license = licenseDao.findById(licenseId);
 		return license;
 	}
-	
+
 	@Override
 	public List<License> getAllLicenses() {
 		return licenseDao.findAll();
@@ -79,28 +91,33 @@ public class ResourceServicesImpl implements ResourceServices {
 
 	@Override
 	public List<Resource> createResource(String objectType, Long objectId, List<Resource> resources) {
-		try {
-			for (Resource resource : resources) {
-				Resource result = resourceDao.save(resource);
-				if (result != null) {
-					logger.debug("Resource Created with ID :" + result.getId());
+		for (Resource resource : resources) {
+			Resource result = resourceDao.save(resource);
+			if (result != null) {
+				logger.debug("Resource Created with ID :" + result.getId());
 
-					if (objectType.equalsIgnoreCase("observation")) {
-						ObservationResource entity = new ObservationResource(objectId, result.getId());
-						ObservationResource mappingResult = observationResourceDao.save(entity);
-						logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId()
-								+ " and " + mappingResult.getResourceId());
-					}
+				if (objectType.equalsIgnoreCase("observation")) {
+					ObservationResource entity = new ObservationResource(objectId, result.getId());
+					ObservationResource mappingResult = observationResourceDao.save(entity);
+					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
+							+ mappingResult.getResourceId());
+				} else if (objectType.equalsIgnoreCase("species")) {
+					SpeciesResource entity = new SpeciesResource(result.getId(), objectId);
+					SpeciesResource mappingResult = speciesResourceDao.save(entity);
+					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesId() + " and "
+							+ mappingResult.getResourceId());
+
 				}
-
 			}
-			resources = resourceDao.findByObservationId(objectId);
-			return resources;
 
-		} catch (Exception e) {
-			e.printStackTrace();
 		}
-		return null;
+		List<Long> resourceIds = null;
+		if (objectType.equalsIgnoreCase("observation"))
+			resourceIds = observationResourceDao.findByObservationId(objectId);
+		else if (objectType.equalsIgnoreCase("species"))
+			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+		resources = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
+		return resources;
 
 	}
 
@@ -109,7 +126,12 @@ public class ResourceServicesImpl implements ResourceServices {
 
 		List<Resource> resourceList = new ArrayList<Resource>();
 		int flag = 0;
-		List<Resource> oldResourcesList = resourceDao.findByObservationId(objectId);
+		List<Long> resourceIds = null;
+		if (objectType.equalsIgnoreCase("observation"))
+			resourceIds = observationResourceDao.findByObservationId(objectId);
+		else if (objectType.equalsIgnoreCase("species"))
+			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+		List<Resource> oldResourcesList = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
 		for (Resource resource : newResources) {
 			flag = 0;
 			for (Resource oldResource : oldResourcesList) {
@@ -128,6 +150,12 @@ public class ResourceServicesImpl implements ResourceServices {
 					ObservationResource mappingResult = observationResourceDao.save(entity);
 					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
 							+ mappingResult.getResourceId());
+				} else if (objectType.equalsIgnoreCase("species")) {
+					SpeciesResource entity = new SpeciesResource(resource.getId(), objectId);
+					SpeciesResource mappingResult = speciesResourceDao.save(entity);
+					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesId() + " and "
+							+ mappingResult.getResourceId());
+
 				}
 			}
 		}
@@ -139,13 +167,24 @@ public class ResourceServicesImpl implements ResourceServices {
 				}
 			}
 			if (flag == 0) {
-				ObservationResource observationResource = observationResourceDao.findByPair(objectId,
-						oldResource.getId());
-				observationResourceDao.delete(observationResource);
+				if (objectType.equalsIgnoreCase("observation")) {
+					ObservationResource observationResource = observationResourceDao.findByPair(objectId,
+							oldResource.getId());
+					observationResourceDao.delete(observationResource);
+				} else if (objectType.equalsIgnoreCase("species")) {
+					SpeciesResource speciesResource = speciesResourceDao.findByPair(objectId, oldResource.getId());
+					speciesResourceDao.delete(speciesResource);
+
+				}
 			}
 		}
 
-		resourceList = resourceDao.findByObservationId(objectId);
+		if (objectType.equalsIgnoreCase("observation"))
+			resourceIds = observationResourceDao.findByObservationId(objectId);
+		else if (objectType.equalsIgnoreCase("species"))
+			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+
+		resourceList = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
 		return resourceList;
 	}
 
@@ -154,7 +193,12 @@ public class ResourceServicesImpl implements ResourceServices {
 		Resource resource = resourceDao.findById(resourceRating.getResourceId());
 		resource.setRating(resourceRating.getRating());
 		resourceDao.update(resource);
-		List<Resource> resourceList = resourceDao.findByObservationId(objectId);
+		List<Long> resourceIds = null;
+		if (objectType.equalsIgnoreCase("observation"))
+			resourceIds = observationResourceDao.findByObservationId(objectId);
+		else if (objectType.equalsIgnoreCase("species"))
+			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+		List<Resource> resourceList = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
 		return resourceList;
 	}
 

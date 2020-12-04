@@ -13,7 +13,7 @@ import io.swagger.annotations.ApiModel;
  */
 
 @ApiModel
-public class ObservationResourceUser {
+public class ResourceData {
 
 	private Resource resource;
 	private User user;
@@ -22,7 +22,7 @@ public class ObservationResourceUser {
 	 * @param resource
 	 * @param user
 	 */
-	public ObservationResourceUser(Resource resource, User user) {
+	public ResourceData(Resource resource, User user) {
 		super();
 		this.resource = resource;
 		this.user = user;
