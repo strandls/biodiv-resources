@@ -57,7 +57,7 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = observationResourceDao.findByObservationId(objectId);
 		else if (objectType.equalsIgnoreCase("species"))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		if (resourceIds != null && !resourceIds.isEmpty())
+		if (resourceIds == null || resourceIds.isEmpty())
 			return null;
 		List<Resource> resource = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
 		for (Resource r : resource) {
