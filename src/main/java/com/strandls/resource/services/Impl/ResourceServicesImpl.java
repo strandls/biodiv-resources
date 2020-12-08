@@ -14,12 +14,14 @@ import javax.inject.Inject;
 import com.strandls.resource.dao.LicenseDao;
 import com.strandls.resource.dao.ObservationResourceDao;
 import com.strandls.resource.dao.ResourceDao;
+import com.strandls.resource.dao.SpeciesFieldResourcesDao;
 import com.strandls.resource.dao.SpeciesResourceDao;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResource;
 import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.pojo.ResourceRating;
+import com.strandls.resource.pojo.SpeciesFieldResources;
 import com.strandls.resource.pojo.SpeciesResource;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
@@ -49,6 +51,9 @@ public class ResourceServicesImpl implements ResourceServices {
 	@Inject
 	private SpeciesResourceDao speciesResourceDao;
 
+	@Inject
+	private SpeciesFieldResourcesDao speciesFieldResourceDao;
+
 	@Override
 	public List<ResourceData> getResouceURL(String objectType, Long objectId) {
 		List<ResourceData> observationResourceUsers = new ArrayList<ResourceData>();
@@ -57,9 +62,11 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = observationResourceDao.findByObservationId(objectId);
 		else if (objectType.equalsIgnoreCase("species"))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		if (resourceIds == null || resourceIds.isEmpty())
 			return null;
-		List<Resource> resource = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
+		List<Resource> resource = resourceDao.findByObjectId(resourceIds);
 		for (Resource r : resource) {
 			try {
 				User u = userService.getUser(r.getUploaderId().toString());
@@ -96,7 +103,13 @@ public class ResourceServicesImpl implements ResourceServices {
 					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesId() + " and "
 							+ mappingResult.getResourceId());
 
+				} else if (objectType.equalsIgnoreCase("SPECIES_FIELD")) {
+					SpeciesFieldResources entity = new SpeciesFieldResources(objectId, resource.getId());
+					SpeciesFieldResources mappingResult = speciesFieldResourceDao.save(entity);
+					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesFieldId() + " and "
+							+ mappingResult.getResourceId());
 				}
+
 			}
 
 		}
@@ -105,7 +118,9 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = observationResourceDao.findByObservationId(objectId);
 		else if (objectType.equalsIgnoreCase("species"))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		resources = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
+		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
+		resources = resourceDao.findByObjectId(resourceIds);
 		return resources;
 
 	}
@@ -120,7 +135,9 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = observationResourceDao.findByObservationId(objectId);
 		else if (objectType.equalsIgnoreCase("species"))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		List<Resource> oldResourcesList = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
+		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
+		List<Resource> oldResourcesList = resourceDao.findByObjectId(resourceIds);
 		for (Resource resource : newResources) {
 			flag = 0;
 			for (Resource oldResource : oldResourcesList) {
@@ -145,6 +162,11 @@ public class ResourceServicesImpl implements ResourceServices {
 					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesId() + " and "
 							+ mappingResult.getResourceId());
 
+				} else if (objectType.equalsIgnoreCase("SPECIES_FIELD")) {
+					SpeciesFieldResources entity = new SpeciesFieldResources(objectId, resource.getId());
+					SpeciesFieldResources mappingResult = speciesFieldResourceDao.save(entity);
+					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesFieldId() + " and "
+							+ mappingResult.getResourceId());
 				}
 			}
 		}
@@ -163,6 +185,10 @@ public class ResourceServicesImpl implements ResourceServices {
 				} else if (objectType.equalsIgnoreCase("species")) {
 					SpeciesResource speciesResource = speciesResourceDao.findByPair(objectId, oldResource.getId());
 					speciesResourceDao.delete(speciesResource);
+				} else if (objectType.equalsIgnoreCase("SPECIES_FIELD")) {
+					SpeciesFieldResources speciesFieldResource = speciesFieldResourceDao.findByPair(objectId,
+							oldResource.getId());
+					speciesFieldResourceDao.delete(speciesFieldResource);
 
 				}
 			}
@@ -172,8 +198,10 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = observationResourceDao.findByObservationId(objectId);
 		else if (objectType.equalsIgnoreCase("species"))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
+		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 
-		resourceList = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
+		resourceList = resourceDao.findByObjectId(resourceIds);
 		return resourceList;
 	}
 
@@ -187,7 +215,9 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = observationResourceDao.findByObservationId(objectId);
 		else if (objectType.equalsIgnoreCase("species"))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		List<Resource> resourceList = resourceDao.findByObjectTypeObjectId(objectType, resourceIds);
+		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
+		List<Resource> resourceList = resourceDao.findByObjectId(resourceIds);
 		return resourceList;
 	}
 
