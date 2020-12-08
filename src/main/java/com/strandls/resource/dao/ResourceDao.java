@@ -47,14 +47,14 @@ public class ResourceDao extends AbstractDAO<Resource, Long> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Resource> findByObjectTypeObjectId(String objectType, List<Long> objectIds) {
+	public List<Resource> findByObjectId(List<Long> objectIds) {
 
-		String qry = "from Resource R where R.context = :objectType and R.id in(:objectIds) order by rating DESC";
+		String qry = "from Resource R where R.id in(:objectIds) order by rating DESC ";
+
 		List<Resource> result = null;
 		Session session = sessionFactory.openSession();
 		try {
 			Query<Resource> query = session.createQuery(qry);
-			query.setParameter("objectType", objectType);
 			query.setParameter("objectIds", objectIds);
 
 			result = query.getResultList();
