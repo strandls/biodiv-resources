@@ -167,7 +167,7 @@ public class ResourceController {
 			return Response.status(Status.BAD_REQUEST).build();
 		}
 	}
-	
+
 	@GET
 	@Path(ApiConstants.LICENSE)
 	@Consumes(MediaType.TEXT_PLAIN)
