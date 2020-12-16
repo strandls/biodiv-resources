@@ -6,10 +6,10 @@ package com.strandls.resource.services.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 
 import com.strandls.resource.dao.LicenseDao;
 import com.strandls.resource.dao.ObservationResourceDao;
@@ -18,15 +18,15 @@ import com.strandls.resource.dao.SpeciesFieldResourcesDao;
 import com.strandls.resource.dao.SpeciesResourceDao;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResource;
-import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.Resource;
+import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.pojo.SpeciesFieldResources;
 import com.strandls.resource.pojo.SpeciesResource;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
-import com.strandls.user.pojo.User;
+import com.strandls.user.pojo.UserIbp;
 
 /**
  * @author Abhishek Rudra
@@ -66,11 +66,11 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		if (resourceIds == null || resourceIds.isEmpty())
 			return null;
-		List<Resource> resource = resourceDao.findByObjectId(resourceIds);
-		for (Resource r : resource) {
+		List<Resource> resourceList = resourceDao.findByObjectId(resourceIds);
+		for (Resource resource : resourceList) {
 			try {
-				User u = userService.getUser(r.getUploaderId().toString());
-				observationResourceUsers.add(new ResourceData(r, u));
+				UserIbp userIbp = userService.getUserIbp(resource.getUploaderId().toString());
+				observationResourceUsers.add(new ResourceData(resource, userIbp));
 			} catch (ApiException e) {
 				logger.error(e.getMessage());
 			}
