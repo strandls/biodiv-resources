@@ -29,7 +29,7 @@ import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
-import com.strandls.user.pojo.User;
+import com.strandls.user.pojo.UserIbp;
 
 /**
  * @author Abhishek Rudra
@@ -72,11 +72,11 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		if (resourceIds == null || resourceIds.isEmpty())
 			return null;
-		List<Resource> resource = resourceDao.findByObjectId(resourceIds);
-		for (Resource r : resource) {
+		List<Resource> resourceList = resourceDao.findByObjectId(resourceIds);
+		for (Resource resource : resourceList) {
 			try {
-				User u = userService.getUser(r.getUploaderId().toString());
-				observationResourceUsers.add(new ResourceData(r, u));
+				UserIbp userIbp = userService.getUserIbp(resource.getUploaderId().toString());
+				observationResourceUsers.add(new ResourceData(resource, userIbp));
 			} catch (ApiException e) {
 				logger.error(e.getMessage());
 			}

@@ -3,7 +3,7 @@
  */
 package com.strandls.resource.pojo;
 
-import com.strandls.user.pojo.User;
+import com.strandls.user.pojo.UserIbp;
 
 import io.swagger.annotations.ApiModel;
 
@@ -16,16 +16,23 @@ import io.swagger.annotations.ApiModel;
 public class ResourceData {
 
 	private Resource resource;
-	private User user;
+	private UserIbp userIbp;
+
+	/**
+	 * 
+	 */
+	public ResourceData() {
+		super();
+	}
 
 	/**
 	 * @param resource
-	 * @param user
+	 * @param userIbp
 	 */
-	public ResourceData(Resource resource, User user) {
+	public ResourceData(Resource resource, UserIbp userIbp) {
 		super();
 		this.resource = resource;
-		this.user = user;
+		this.userIbp = userIbp;
 	}
 
 	public Resource getResource() {
@@ -36,12 +43,12 @@ public class ResourceData {
 		this.resource = resource;
 	}
 
-	public User getUser() {
-		return user;
+	public UserIbp getUserIbp() {
+		return userIbp;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public void setUserIbp(UserIbp userIbp) {
+		this.userIbp = userIbp;
 	}
 
 }
