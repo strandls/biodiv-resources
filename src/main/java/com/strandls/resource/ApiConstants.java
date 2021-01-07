@@ -22,5 +22,6 @@ public class ApiConstants {
 	public static final String RATING = "/rating";
 	public static final String REMOVE = "/remove";
 	public static final String UFILE = "/ufile";
+	public static final String ALL = "/all";
 
 }
