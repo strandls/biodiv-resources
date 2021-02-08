@@ -6,10 +6,10 @@ package com.strandls.resource.services.Impl;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.inject.Inject;
 
 import com.strandls.resource.dao.LicenseDao;
 import com.strandls.resource.dao.ObservationResourceDao;
@@ -160,6 +160,22 @@ public class ResourceServicesImpl implements ResourceServices {
 
 		ufile = uFileDao.save(ufile);
 		return ufile;
+	}
+
+	@Override
+	public Boolean removeUFile(Long uFileId) {
+		try {
+			UFile uFile = uFileDao.findById(uFileId);
+			uFile = uFileDao.delete(uFile);
+
+			if (uFile != null)
+				return true;
+			return false;
+
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 
 }

@@ -32,4 +32,6 @@ public interface ResourceServices {
 
 	public UFile createUFile(UFileCreateData ufileCreateData);
 
+	public Boolean removeUFile(Long uFileId);
+
 }
