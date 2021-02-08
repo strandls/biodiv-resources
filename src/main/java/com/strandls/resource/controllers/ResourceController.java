@@ -225,4 +225,26 @@ public class ResourceController {
 		}
 	}
 
+	@PUT
+	@Path(ApiConstants.REMOVE + ApiConstants.UFILE + "/{uFileId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+
+	@ApiOperation(value = "Remove the ufile", notes = "returns the booelan for deletion", response = Boolean.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to delete the ufile", response = String.class) })
+
+	public Response removeUFile(@Context HttpServletRequest request, @PathParam("uFileId") String uFileId) {
+		try {
+			Long ufileId = Long.parseLong(uFileId);
+			Boolean result = service.removeUFile(ufileId);
+			if (result != null)
+				return Response.status(Status.OK).entity(result).build();
+			return Response.status(Status.NOT_ACCEPTABLE).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
 }
