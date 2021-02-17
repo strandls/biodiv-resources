@@ -8,6 +8,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -206,7 +207,7 @@ public class ResourceController {
 		}
 	}
 
-	@PUT
+	@DELETE
 	@Path(ApiConstants.REMOVE + ApiConstants.UFILE + "/{uFileId}")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
