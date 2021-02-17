@@ -251,12 +251,15 @@ public class ResourceServicesImpl implements ResourceServices {
 	public Boolean removeUFile(Long uFileId) {
 		try {
 			UFile uFile = uFileDao.findById(uFileId);
-			uFile = uFileDao.delete(uFile);
+			if (uFile != null) {
+				uFile = uFileDao.delete(uFile);
 
-			if (uFile != null)
-				return true;
-			return false;
+				if (uFile != null)
+					return true;
+				return false;
 
+			}
+			return true;
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}
