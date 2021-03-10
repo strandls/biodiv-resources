@@ -16,6 +16,7 @@ import com.strandls.resource.dao.ObservationResourceDao;
 import com.strandls.resource.dao.ResourceDao;
 import com.strandls.resource.dao.SpeciesFieldResourcesDao;
 import com.strandls.resource.dao.SpeciesResourceDao;
+import com.strandls.resource.dao.UFileDao;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResource;
 import com.strandls.resource.pojo.Resource;
@@ -23,6 +24,8 @@ import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.pojo.SpeciesFieldResources;
 import com.strandls.resource.pojo.SpeciesResource;
+import com.strandls.resource.pojo.UFile;
+import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
@@ -41,6 +44,9 @@ public class ResourceServicesImpl implements ResourceServices {
 
 	@Inject
 	private LicenseDao licenseDao;
+
+	@Inject
+	private UFileDao uFileDao;
 
 	@Inject
 	private UserServiceApi userService;
@@ -219,6 +225,40 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		List<Resource> resourceList = resourceDao.findByObjectId(resourceIds);
 		return resourceList;
+	}
+
+	@Override
+	public UFile uFileFindById(Long id) {
+		UFile result = uFileDao.findById(id);
+		return result;
+	}
+
+	@Override
+	public UFile createUFile(UFileCreateData ufileCreateData) {
+		UFile ufile = new UFile(null, 0L, null, ufileCreateData.getMimeType(), ufileCreateData.getPath(),
+				ufileCreateData.getSize(), (ufileCreateData.getWeight() > 0) ? ufileCreateData.getWeight() : 0);
+
+		ufile = uFileDao.save(ufile);
+		return ufile;
+	}
+
+	@Override
+	public Boolean removeUFile(Long uFileId) {
+		try {
+			UFile uFile = uFileDao.findById(uFileId);
+			if (uFile != null) {
+				uFile = uFileDao.delete(uFile);
+
+				if (uFile != null)
+					return true;
+				return false;
+
+			}
+			return true;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
+		return null;
 	}
 
 }
