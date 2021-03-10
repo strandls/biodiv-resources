@@ -5,8 +5,10 @@ package com.strandls.resource.controllers;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
@@ -18,14 +20,14 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 
-import javax.inject.Inject;
-
 import com.strandls.authentication_utility.filter.ValidateUser;
 import com.strandls.resource.ApiConstants;
 import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.ObservationResourceUser;
 import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.pojo.ResourceRating;
+import com.strandls.resource.pojo.UFile;
+import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
 
 import io.swagger.annotations.Api;
@@ -161,6 +163,69 @@ public class ResourceController {
 
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).build();
+		}
+	}
+
+	@GET
+	@Path(ApiConstants.UFILE + "/{id}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "finds ufile by id", notes = "Return the ufile data as per id", response = UFile.class)
+	@ApiResponses(value = {
+			@ApiResponse(code = 400, message = "unable to find the ufile data", response = String.class) })
+
+	public Response getUFilePath(@PathParam("id") String id) {
+		try {
+			Long ufileId = Long.parseLong(id);
+			UFile result = service.uFileFindById(ufileId);
+			return Response.status(Status.OK).entity(result).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.UFILE)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+
+	@ApiOperation(value = "create the Ufile object", notes = "return the ufile object on completion", response = UFile.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to create the ufile", response = String.class) })
+
+	public Response createUFile(@Context HttpServletRequest request,
+			@ApiParam(name = "ufileCreateData") UFileCreateData ufileCreateData) {
+		try {
+			UFile result = service.createUFile(ufileCreateData);
+			if (result != null)
+				return Response.status(Status.OK).entity(result).build();
+			return Response.status(Status.NOT_ACCEPTABLE).entity("Data missing").build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@DELETE
+	@Path(ApiConstants.REMOVE + ApiConstants.UFILE + "/{uFileId}")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+
+	@ApiOperation(value = "Remove the ufile", notes = "returns the booelan for deletion", response = Boolean.class)
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to delete the ufile", response = String.class) })
+
+	public Response removeUFile(@Context HttpServletRequest request, @PathParam("uFileId") String uFileId) {
+		try {
+			Long ufileId = Long.parseLong(uFileId);
+			Boolean result = service.removeUFile(ufileId);
+			if (result != null)
+				return Response.status(Status.OK).entity(result).build();
+			return Response.status(Status.NOT_ACCEPTABLE).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
 	}
 

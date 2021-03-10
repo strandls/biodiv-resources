@@ -18,6 +18,7 @@ public class ResourceDaoModule extends AbstractModule {
 		bind(ResourceDao.class).in(Scopes.SINGLETON);
 		bind(LicenseDao.class).in(Scopes.SINGLETON);
 		bind(ObservationResourceDao.class).in(Scopes.SINGLETON);
+		bind(UFileDao.class).in(Scopes.SINGLETON);
 
 	}
 }
