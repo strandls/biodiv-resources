@@ -23,7 +23,9 @@ import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.ResourceRating;
 import com.strandls.resource.pojo.SpeciesFieldResources;
+import com.strandls.resource.pojo.SpeciesPull;
 import com.strandls.resource.pojo.SpeciesResource;
+import com.strandls.resource.pojo.SpeciesResourcePulling;
 import com.strandls.resource.pojo.UFile;
 import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
@@ -264,6 +266,26 @@ public class ResourceServicesImpl implements ResourceServices {
 			logger.error(e.getMessage());
 		}
 		return null;
+	}
+
+	@Override
+	public List<SpeciesPull> getresourceMultipleObserId(String objectType, List<Long> objectIds) {
+		List<SpeciesPull> result = new ArrayList<SpeciesPull>();
+		for (Long objectId : objectIds) {
+			List<ResourceData> resourceData = getResouceURL(objectType, objectId);
+			result.add(new SpeciesPull(objectId, resourceData));
+		}
+		return result;
+	}
+
+	@Override
+	public List<ResourceData> speciesResourcesPulling(SpeciesResourcePulling resourcePullingData) {
+
+		for (Long resourceId : resourcePullingData.getResourcesIds()) {
+			SpeciesResource entity = new SpeciesResource(resourceId, resourcePullingData.getSpeciesId());
+			entity = speciesResourceDao.save(entity);
+		}
+		return getResouceURL("species", resourcePullingData.getSpeciesId());
 	}
 
 }
