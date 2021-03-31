@@ -145,6 +145,11 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
 		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
+
+		if (resourceIds == null || resourceIds.isEmpty())
+//			resources are getting created for the first time
+			return createResource(objectType, objectId, newResources);
+
 		List<Resource> oldResourcesList = resourceDao.findByObjectId(resourceIds);
 		for (Resource resource : newResources) {
 			flag = 0;
