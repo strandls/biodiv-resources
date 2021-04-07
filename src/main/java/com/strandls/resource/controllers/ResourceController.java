@@ -9,12 +9,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -259,10 +261,12 @@ public class ResourceController {
 	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch resource", response = String.class) })
 
 	public Response getBulkResources(@PathParam("objectType") String objectType,
+			@DefaultValue("0") @QueryParam("offset") String offset,
 			@ApiParam(name = "objectIds") List<Long> objectIds) {
 		try {
 
-			List<SpeciesPull> result = service.getresourceMultipleObserId(objectType, objectIds);
+			Long offSet = Long.parseLong(offset);
+			List<SpeciesPull> result = service.getresourceMultipleObserId(objectType, objectIds, offSet);
 			return Response.status(Status.OK).entity(result).build();
 
 		} catch (Exception e) {
