@@ -36,7 +36,7 @@ public interface ResourceServices {
 
 	public Boolean removeUFile(Long uFileId);
 
-	public List<SpeciesPull> getresourceMultipleObserId(String objectType, List<Long> objectIds);
+	public List<SpeciesPull> getresourceMultipleObserId(String objectType, List<Long> objectIds, Long offset);
 
 	public List<ResourceData> speciesResourcesPulling(SpeciesResourcePulling resourcePullingData);
 

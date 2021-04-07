@@ -4,7 +4,10 @@
 package com.strandls.resource.services.Impl;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.inject.Inject;
 
@@ -269,13 +272,69 @@ public class ResourceServicesImpl implements ResourceServices {
 	}
 
 	@Override
-	public List<SpeciesPull> getresourceMultipleObserId(String objectType, List<Long> objectIds) {
-		List<SpeciesPull> result = new ArrayList<SpeciesPull>();
-		for (Long objectId : objectIds) {
-			List<ResourceData> resourceData = getResouceURL(objectType, objectId);
-			result.add(new SpeciesPull(objectId, resourceData));
+	public List<SpeciesPull> getresourceMultipleObserId(String objectType, List<Long> objectIds, Long offset) {
+
+		try {
+
+			int lowerLimit = (int) (0 + offset);
+			int upperLimit = (int) (10 + offset);
+			List<SpeciesPull> result = new ArrayList<SpeciesPull>();
+			List<Long> idList = new ArrayList<Long>();
+			Map<Long, List<Long>> observationResMap = new HashMap<Long, List<Long>>();
+			Map<Long, List<ResourceData>> speciesPullMap = new HashMap<Long, List<ResourceData>>();
+			for (Long objectId : objectIds) {
+
+				List<Long> resourceIds = observationResourceDao.findByObservationId(objectId);
+				if (resourceIds != null && !resourceIds.isEmpty()) {
+					idList.addAll(resourceIds);
+					observationResMap.put(objectId, resourceIds);
+				}
+
+				if (idList.size() >= upperLimit)
+					break;
+			}
+			if (idList.size() < lowerLimit)
+				return null;
+
+			upperLimit = (idList.size() < upperLimit) ? idList.size() : upperLimit;
+
+			for (int i = lowerLimit; i < upperLimit; i++) {
+				Resource resource = resourceDao.findById(idList.get(i));
+				UserIbp userIbp = userService.getUserIbp(resource.getUploaderId().toString());
+
+				Long observationId = null;
+				for (Entry<Long, List<Long>> entry : observationResMap.entrySet()) {
+					if (entry.getValue().contains(idList.get(i))) {
+						observationId = entry.getKey();
+						break;
+					}
+				}
+
+				if (speciesPullMap.containsKey(observationId)) {
+					List<ResourceData> resourcesDataList = speciesPullMap.get(observationId);
+					resourcesDataList.add(new ResourceData(resource, userIbp));
+					speciesPullMap.put(observationId, resourcesDataList);
+
+				} else {
+					List<ResourceData> resourcesDataList = new ArrayList<ResourceData>();
+					resourcesDataList.add(new ResourceData(resource, userIbp));
+					speciesPullMap.put(observationId, resourcesDataList);
+				}
+
+			}
+
+			if (!speciesPullMap.isEmpty()) {
+				for (Entry<Long, List<ResourceData>> entry : speciesPullMap.entrySet()) {
+					result.add(new SpeciesPull(entry.getKey(), entry.getValue()));
+				}
+			}
+
+			return result;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
 		}
-		return result;
+		return null;
+
 	}
 
 	@Override
