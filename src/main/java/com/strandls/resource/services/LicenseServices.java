@@ -1,10 +1,12 @@
 package com.strandls.resource.services;
 
-import com.strandls.resource.pojo.License;
-
 import java.util.List;
+
+import com.strandls.resource.pojo.License;
 
 public interface LicenseServices {
 
-    List<License> getAllLicenses();
+	public List<License> getAllLicenses();
+
+	public License getLicenseById(Long licenseId);
 }

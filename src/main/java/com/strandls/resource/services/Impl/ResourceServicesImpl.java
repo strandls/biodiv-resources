@@ -31,6 +31,7 @@ import com.strandls.resource.pojo.SpeciesResource;
 import com.strandls.resource.pojo.SpeciesResourcePulling;
 import com.strandls.resource.pojo.UFile;
 import com.strandls.resource.pojo.UFileCreateData;
+import com.strandls.resource.services.LicenseServices;
 import com.strandls.resource.services.ResourceServices;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
@@ -65,6 +66,9 @@ public class ResourceServicesImpl implements ResourceServices {
 	@Inject
 	private SpeciesFieldResourcesDao speciesFieldResourceDao;
 
+	@Inject
+	private LicenseServices licenseService;
+
 	@Override
 	public List<ResourceData> getResouceURL(String objectType, Long objectId) {
 		List<ResourceData> observationResourceUsers = new ArrayList<ResourceData>();
@@ -81,7 +85,8 @@ public class ResourceServicesImpl implements ResourceServices {
 		for (Resource resource : resourceList) {
 			try {
 				UserIbp userIbp = userService.getUserIbp(resource.getUploaderId().toString());
-				observationResourceUsers.add(new ResourceData(resource, userIbp));
+				observationResourceUsers.add(
+						new ResourceData(resource, userIbp, licenseService.getLicenseById(resource.getLicenseId())));
 			} catch (ApiException e) {
 				logger.error(e.getMessage());
 			}
@@ -317,12 +322,14 @@ public class ResourceServicesImpl implements ResourceServices {
 
 				if (speciesPullMap.containsKey(observationId)) {
 					List<ResourceData> resourcesDataList = speciesPullMap.get(observationId);
-					resourcesDataList.add(new ResourceData(resource, userIbp));
+					resourcesDataList.add(new ResourceData(resource, userIbp,
+							licenseService.getLicenseById(resource.getLicenseId())));
 					speciesPullMap.put(observationId, resourcesDataList);
 
 				} else {
 					List<ResourceData> resourcesDataList = new ArrayList<ResourceData>();
-					resourcesDataList.add(new ResourceData(resource, userIbp));
+					resourcesDataList.add(new ResourceData(resource, userIbp,
+							licenseService.getLicenseById(resource.getLicenseId())));
 					speciesPullMap.put(observationId, resourcesDataList);
 				}
 
