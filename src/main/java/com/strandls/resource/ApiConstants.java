@@ -23,5 +23,7 @@ public class ApiConstants {
 	public static final String ALL = "/all";
 	public static final String REMOVE = "/remove";
 	public static final String UFILE = "/ufile";
+	public static final String BULK = "/bulk";
+	public static final String PULLRESOURCE = "/pullResource";
 
 }

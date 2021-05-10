@@ -9,12 +9,14 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
+import javax.ws.rs.DefaultValue;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -26,6 +28,8 @@ import com.strandls.resource.pojo.License;
 import com.strandls.resource.pojo.Resource;
 import com.strandls.resource.pojo.ResourceData;
 import com.strandls.resource.pojo.ResourceRating;
+import com.strandls.resource.pojo.SpeciesPull;
+import com.strandls.resource.pojo.SpeciesResourcePulling;
 import com.strandls.resource.pojo.UFile;
 import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.ResourceServices;
@@ -226,6 +230,49 @@ public class ResourceController {
 			if (result != null)
 				return Response.status(Status.OK).entity(result).build();
 			return Response.status(Status.NOT_ACCEPTABLE).build();
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.BULK + ApiConstants.GETPATH + "/{objectType}")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ApiOperation(value = "get multiple resources", notes = "returns multiple resources", response = SpeciesPull.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to fetch resource", response = String.class) })
+
+	public Response getBulkResources(@PathParam("objectType") String objectType,
+			@DefaultValue("0") @QueryParam("offset") String offset,
+			@ApiParam(name = "objectIds") List<Long> objectIds) {
+		try {
+
+			Long offSet = Long.parseLong(offset);
+			List<SpeciesPull> result = service.getresourceMultipleObserId(objectType, objectIds, offSet);
+			return Response.status(Status.OK).entity(result).build();
+
+		} catch (Exception e) {
+			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
+		}
+	}
+
+	@POST
+	@Path(ApiConstants.PULLRESOURCE)
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+
+	@ValidateUser
+
+	@ApiOperation(value = "pull resources for speciess", notes = "returns multiple resources", response = ResourceData.class, responseContainer = "List")
+	@ApiResponses(value = { @ApiResponse(code = 400, message = "unable to pull resource", response = String.class) })
+
+	public Response pullResource(@Context HttpServletRequest request,
+			@ApiParam(name = "resourcePulling") SpeciesResourcePulling resourcePulling) {
+		try {
+			List<ResourceData> result = service.speciesResourcesPulling(resourcePulling);
+			return Response.status(Status.OK).entity(result).build();
+
 		} catch (Exception e) {
 			return Response.status(Status.BAD_REQUEST).entity(e.getMessage()).build();
 		}
