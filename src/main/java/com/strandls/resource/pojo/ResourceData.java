@@ -17,6 +17,7 @@ public class ResourceData {
 
 	private Resource resource;
 	private UserIbp userIbp;
+	private License license;
 
 	/**
 	 * 
@@ -28,11 +29,13 @@ public class ResourceData {
 	/**
 	 * @param resource
 	 * @param userIbp
+	 * @param license
 	 */
-	public ResourceData(Resource resource, UserIbp userIbp) {
+	public ResourceData(Resource resource, UserIbp userIbp, License license) {
 		super();
 		this.resource = resource;
 		this.userIbp = userIbp;
+		this.license = license;
 	}
 
 	public Resource getResource() {
@@ -49,6 +52,14 @@ public class ResourceData {
 
 	public void setUserIbp(UserIbp userIbp) {
 		this.userIbp = userIbp;
+	}
+
+	public License getLicense() {
+		return license;
+	}
+
+	public void setLicense(License license) {
+		this.license = license;
 	}
 
 }
