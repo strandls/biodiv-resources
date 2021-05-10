@@ -9,11 +9,16 @@ import java.util.List;
 
 public class LicenseServicesImpl implements LicenseServices {
 
-    @Inject
-    LicenseDao licenseDao;
+	@Inject
+	LicenseDao licenseDao;
 
-    @Override
-    public List<License> getAllLicenses() {
-        return licenseDao.findAll();
-    }
+	@Override
+	public List<License> getAllLicenses() {
+		return licenseDao.findAll();
+	}
+
+	@Override
+	public License getLicenseById(Long licenseId) {
+		return licenseDao.findById(licenseId);
+	}
 }

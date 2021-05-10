@@ -6,5 +6,7 @@ import java.util.List;
 
 public interface LicenseServices {
 
-    List<License> getAllLicenses();
+	public List<License> getAllLicenses();
+
+	public License getLicenseById(Long licenseId);
 }
