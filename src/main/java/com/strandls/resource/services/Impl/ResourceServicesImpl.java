@@ -354,4 +354,10 @@ public class ResourceServicesImpl implements ResourceServices {
 		return getResouceURL("species", resourcePullingData.getSpeciesId());
 	}
 
+	@Override
+	public Resource getResourceById(Long resourceId) {
+		Resource result = resourceDao.findById(resourceId);
+		return result;
+	}
+
 }
