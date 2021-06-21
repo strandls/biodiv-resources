@@ -6,7 +6,7 @@
 	<artifactId>resources-api</artifactId>
 	<version>1.0.0</version>
 	<packaging>war</packaging>
-	<name>biodiv-resources-api</name>
+	<name>biodiv-resources</name>
 	<url>https://github.com/strandls/biodiv-resources</url>
 
 	<properties>
