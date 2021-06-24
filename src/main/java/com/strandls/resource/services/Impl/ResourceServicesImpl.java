@@ -33,6 +33,7 @@ import com.strandls.resource.pojo.UFile;
 import com.strandls.resource.pojo.UFileCreateData;
 import com.strandls.resource.services.LicenseServices;
 import com.strandls.resource.services.ResourceServices;
+import com.strandls.resource.util.Constants;
 import com.strandls.user.ApiException;
 import com.strandls.user.controller.UserServiceApi;
 import com.strandls.user.pojo.UserIbp;
@@ -97,8 +98,7 @@ public class ResourceServicesImpl implements ResourceServices {
 
 	@Override
 	public License getLicenseResouce(Long licenseId) {
-		License license = licenseDao.findById(licenseId);
-		return license;
+		return licenseDao.findById(licenseId);
 	}
 
 	@Override
@@ -111,8 +111,8 @@ public class ResourceServicesImpl implements ResourceServices {
 				if (objectType.equalsIgnoreCase("observation")) {
 					ObservationResource entity = new ObservationResource(objectId, result.getId());
 					ObservationResource mappingResult = observationResourceDao.save(entity);
-					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
-							+ mappingResult.getResourceId());
+					logger.debug("Observation Resource Mapping Created: ", mappingResult.getObservationId() ," and "
+							, mappingResult.getResourceId());
 				} else if (objectType.equalsIgnoreCase("species")) {
 					SpeciesResource entity = new SpeciesResource(result.getId(), objectId);
 					SpeciesResource mappingResult = speciesResourceDao.save(entity);
@@ -232,11 +232,11 @@ public class ResourceServicesImpl implements ResourceServices {
 		resource.setRating(resourceRating.getRating());
 		resourceDao.update(resource);
 		List<Long> resourceIds = null;
-		if (objectType.equalsIgnoreCase("observation"))
+		if (objectType.equalsIgnoreCase(Constants.OBSERVATION))
 			resourceIds = observationResourceDao.findByObservationId(objectId);
-		else if (objectType.equalsIgnoreCase("species"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIES))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		List<Resource> resourceList = resourceDao.findByObjectId(resourceIds);
 		return resourceList;

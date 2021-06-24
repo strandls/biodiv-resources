@@ -9,6 +9,13 @@ package com.strandls.resource;
  */
 public class ApiConstants {
 
+	/**
+	 * since all class members are static , private constructor is required
+	 */
+	private ApiConstants() {
+		super();
+	}
+
 	// versioning
 	public static final String V1 = "/v1";
 
