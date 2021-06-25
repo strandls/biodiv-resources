@@ -74,11 +74,11 @@ public class ResourceServicesImpl implements ResourceServices {
 	public List<ResourceData> getResouceURL(String objectType, Long objectId) {
 		List<ResourceData> observationResourceUsers = new ArrayList<ResourceData>();
 		List<Long> resourceIds = null;
-		if (objectType.equalsIgnoreCase("observation"))
+		if (objectType.equalsIgnoreCase(Constants.OBSERVATION))
 			resourceIds = observationResourceDao.findByObservationId(objectId);
-		else if (objectType.equalsIgnoreCase("species"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIES))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		if (resourceIds == null || resourceIds.isEmpty())
 			return null;
@@ -108,18 +108,18 @@ public class ResourceServicesImpl implements ResourceServices {
 			if (result != null) {
 				logger.debug("Resource Created with ID :" + result.getId());
 
-				if (objectType.equalsIgnoreCase("observation")) {
+				if (objectType.equalsIgnoreCase(Constants.OBSERVATION)) {
 					ObservationResource entity = new ObservationResource(objectId, result.getId());
 					ObservationResource mappingResult = observationResourceDao.save(entity);
-					logger.debug("Observation Resource Mapping Created: ", mappingResult.getObservationId() ," and "
-							, mappingResult.getResourceId());
-				} else if (objectType.equalsIgnoreCase("species")) {
+					logger.debug("Observation Resource Mapping Created: ", mappingResult.getObservationId(), " and ",
+							mappingResult.getResourceId());
+				} else if (objectType.equalsIgnoreCase(Constants.SPECIES)) {
 					SpeciesResource entity = new SpeciesResource(result.getId(), objectId);
 					SpeciesResource mappingResult = speciesResourceDao.save(entity);
 					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesId() + " and "
 							+ mappingResult.getResourceId());
 
-				} else if (objectType.equalsIgnoreCase("SPECIES_FIELD")) {
+				} else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD)) {
 					SpeciesFieldResources entity = new SpeciesFieldResources(objectId, resource.getId());
 					SpeciesFieldResources mappingResult = speciesFieldResourceDao.save(entity);
 					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesFieldId() + " and "
@@ -130,11 +130,11 @@ public class ResourceServicesImpl implements ResourceServices {
 
 		}
 		List<Long> resourceIds = null;
-		if (objectType.equalsIgnoreCase("observation"))
+		if (objectType.equalsIgnoreCase(Constants.OBSERVATION))
 			resourceIds = observationResourceDao.findByObservationId(objectId);
-		else if (objectType.equalsIgnoreCase("species"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIES))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 		resources = resourceDao.findByObjectId(resourceIds);
 		return resources;
@@ -147,11 +147,11 @@ public class ResourceServicesImpl implements ResourceServices {
 		List<Resource> resourceList = new ArrayList<Resource>();
 		int flag = 0;
 		List<Long> resourceIds = null;
-		if (objectType.equalsIgnoreCase("observation"))
+		if (objectType.equalsIgnoreCase(Constants.OBSERVATION))
 			resourceIds = observationResourceDao.findByObservationId(objectId);
-		else if (objectType.equalsIgnoreCase("species"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIES))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 
 		if (resourceIds == null || resourceIds.isEmpty())
@@ -172,18 +172,18 @@ public class ResourceServicesImpl implements ResourceServices {
 			if (flag == 0) {
 				resource = resourceDao.save(resource);
 
-				if (objectType.equalsIgnoreCase("observation")) {
+				if (objectType.equalsIgnoreCase(Constants.OBSERVATION)) {
 					ObservationResource entity = new ObservationResource(objectId, resource.getId());
 					ObservationResource mappingResult = observationResourceDao.save(entity);
 					logger.debug("Observation Resource Mapping Created: " + mappingResult.getObservationId() + " and "
 							+ mappingResult.getResourceId());
-				} else if (objectType.equalsIgnoreCase("species")) {
+				} else if (objectType.equalsIgnoreCase(Constants.SPECIES)) {
 					SpeciesResource entity = new SpeciesResource(resource.getId(), objectId);
 					SpeciesResource mappingResult = speciesResourceDao.save(entity);
 					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesId() + " and "
 							+ mappingResult.getResourceId());
 
-				} else if (objectType.equalsIgnoreCase("SPECIES_FIELD")) {
+				} else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD)) {
 					SpeciesFieldResources entity = new SpeciesFieldResources(objectId, resource.getId());
 					SpeciesFieldResources mappingResult = speciesFieldResourceDao.save(entity);
 					logger.debug("Species Resource Mapping Created: " + mappingResult.getSpeciesFieldId() + " and "
@@ -199,14 +199,14 @@ public class ResourceServicesImpl implements ResourceServices {
 				}
 			}
 			if (flag == 0) {
-				if (objectType.equalsIgnoreCase("observation")) {
+				if (objectType.equalsIgnoreCase(Constants.OBSERVATION)) {
 					ObservationResource observationResource = observationResourceDao.findByPair(objectId,
 							oldResource.getId());
 					observationResourceDao.delete(observationResource);
-				} else if (objectType.equalsIgnoreCase("species")) {
+				} else if (objectType.equalsIgnoreCase(Constants.SPECIES)) {
 					SpeciesResource speciesResource = speciesResourceDao.findByPair(objectId, oldResource.getId());
 					speciesResourceDao.delete(speciesResource);
-				} else if (objectType.equalsIgnoreCase("SPECIES_FIELD")) {
+				} else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD)) {
 					SpeciesFieldResources speciesFieldResource = speciesFieldResourceDao.findByPair(objectId,
 							oldResource.getId());
 					speciesFieldResourceDao.delete(speciesFieldResource);
@@ -215,11 +215,11 @@ public class ResourceServicesImpl implements ResourceServices {
 			}
 		}
 
-		if (objectType.equalsIgnoreCase("observation"))
+		if (objectType.equalsIgnoreCase(Constants.OBSERVATION))
 			resourceIds = observationResourceDao.findByObservationId(objectId);
-		else if (objectType.equalsIgnoreCase("species"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIES))
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
-		else if (objectType.equalsIgnoreCase("SPECIES_FIELD"))
+		else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
 
 		resourceList = resourceDao.findByObjectId(resourceIds);
@@ -238,14 +238,13 @@ public class ResourceServicesImpl implements ResourceServices {
 			resourceIds = speciesResourceDao.findBySpeciesId(objectId);
 		else if (objectType.equalsIgnoreCase(Constants.SPECIESFIELD))
 			resourceIds = speciesFieldResourceDao.findBySpeciesFieldId(objectId);
-		List<Resource> resourceList = resourceDao.findByObjectId(resourceIds);
-		return resourceList;
+
+		return resourceDao.findByObjectId(resourceIds);
 	}
 
 	@Override
 	public UFile uFileFindById(Long id) {
-		UFile result = uFileDao.findById(id);
-		return result;
+		return uFileDao.findById(id);
 	}
 
 	@Override

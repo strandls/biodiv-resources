@@ -8,6 +8,7 @@ import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
+import org.hibernate.criterion.CriteriaSpecification;
 
 public abstract class AbstractDAO<T, K extends Serializable> {
 
@@ -80,7 +81,7 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 		Session session = sessionFactory.openSession();
 		try {
 			Criteria criteria = session.createCriteria(daoType);
-			entities = criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY).list();
+			entities = criteria.setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY).list();
 		} catch (Exception e) {
 			throw e;
 		} finally {
@@ -95,7 +96,7 @@ public abstract class AbstractDAO<T, K extends Serializable> {
 		List<T> entities = null;
 		Session session = sessionFactory.openSession();
 		try {
-			Criteria criteria = session.createCriteria(daoType).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+			Criteria criteria = session.createCriteria(daoType).setResultTransformer(CriteriaSpecification.DISTINCT_ROOT_ENTITY);
 			entities = criteria.setFirstResult(offset).setMaxResults(limit).list();
 		} catch (Exception e) {
 			throw e;
